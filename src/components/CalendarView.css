@@ -1,0 +1,92 @@
+/* CalendarView.css */
+.calendar-view {
+  background: rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  border-radius: 12px;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  color: white;
+}
+
+.calendar-header h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.nav-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: white;
+  padding: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background 0.2s;
+}
+
+.nav-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+
+.days-of-week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-align: center;
+}
+
+.day-cell {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 0.5rem;
+  color: rgba(255, 255, 255, 0.8);
+  min-height: 90px;
+  transition: background 0.2s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.day-cell.disabled {
+  opacity: 0.4;
+}
+
+.day-cell.has-dones {
+  background: rgba(78, 205, 196, 0.2);
+  border: 1px solid rgba(78, 205, 196, 0.4);
+}
+
+.day-number {
+  font-weight: 500;
+  align-self: flex-start;
+  padding: 0.25rem;
+}
+
+.done-indicator {
+  background: #4ecdc4;
+  color: white;
+  font-weight: 600;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+} 
