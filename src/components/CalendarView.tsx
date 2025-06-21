@@ -1,36 +1,40 @@
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Done } from '../App';
 import './CalendarView.css';
+import { Done } from '../types';
 
 interface CalendarViewProps {
   dones: Done[];
 }
 
 const CalendarView = ({ dones }: CalendarViewProps) => {
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+
+  const donesByDate = dones.reduce((acc, done) => {
+    const dateKey = new Date(done.createdAt).toDateString();
+    acc[dateKey] = (acc[dateKey] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
 
   const changeMonth = (amount: number) => {
-    setCurrentDate(prev => {
+    setCurrentMonth(prev => {
       const newDate = new Date(prev);
       newDate.setMonth(newDate.getMonth() + amount);
       return newDate;
     });
   };
 
-  const renderHeader = () => {
-    return (
-      <div className="calendar-header">
-        <button onClick={() => changeMonth(-1)} className="nav-button" title="이전 달">
-          <ChevronLeft size={20} />
-        </button>
-        <h2>{currentDate.getFullYear()}년 {currentDate.getMonth() + 1}월</h2>
-        <button onClick={() => changeMonth(1)} className="nav-button" title="다음 달">
-          <ChevronRight size={20} />
-        </button>
-      </div>
-    );
-  };
+  const renderHeader = () => (
+    <div className="calendar-header">
+      <button onClick={() => changeMonth(-1)} className="nav-button" title="이전 달">
+        <ChevronLeft size={20} />
+      </button>
+      <h2>{currentMonth.getFullYear()}년 {currentMonth.getMonth() + 1}월</h2>
+      <button onClick={() => changeMonth(1)} className="nav-button" title="다음 달">
+        <ChevronRight size={20} />
+      </button>
+    </div>
+  );
 
   const renderDaysOfWeek = () => {
     const days = ['일', '월', '화', '수', '목', '금', '토'];
@@ -42,23 +46,15 @@ const CalendarView = ({ dones }: CalendarViewProps) => {
   };
 
   const renderCells = () => {
-    const monthStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-    const monthEnd = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+    const monthStart = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+    const monthEnd = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
     const startDate = new Date(monthStart);
     startDate.setDate(startDate.getDate() - monthStart.getDay());
-    const endDate = new Date(monthEnd);
-    endDate.setDate(endDate.getDate() + (6 - monthEnd.getDay()));
-
-    const donesByDate: { [key: string]: number } = dones.reduce((acc, done) => {
-        const dateKey = new Date(done.createdAt).toDateString();
-        acc[dateKey] = (acc[dateKey] || 0) + 1;
-        return acc;
-    }, {} as { [key: string]: number });
-
+    
     const cells = [];
-    let day = new Date(startDate);
+    let day = startDate;
 
-    while (day <= endDate) {
+    while (day <= monthEnd || day.getDay() !== 0) {
       const dateKey = day.toDateString();
       const doneCount = donesByDate[dateKey] || 0;
       
@@ -66,7 +62,7 @@ const CalendarView = ({ dones }: CalendarViewProps) => {
         <div
           key={day.toString()}
           className={`day-cell ${
-            day.getMonth() !== currentDate.getMonth() ? 'disabled' : ''
+            day.getMonth() !== currentMonth.getMonth() ? 'disabled' : ''
           } ${doneCount > 0 ? 'has-dones' : ''}`}
         >
           <span className="day-number">{day.getDate()}</span>
@@ -74,7 +70,9 @@ const CalendarView = ({ dones }: CalendarViewProps) => {
         </div>
       );
       day.setDate(day.getDate() + 1);
+      if (day > monthEnd && day.getDay() === 0) break;
     }
+    
     return <div className="calendar-grid">{cells}</div>;
   };
 
@@ -87,4 +85,4 @@ const CalendarView = ({ dones }: CalendarViewProps) => {
   );
 };
 
-export default CalendarView; 
+export default CalendarView;

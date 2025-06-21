@@ -10,11 +10,15 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
+    "@types/react-router-dom": "^5.3.3",
+    "axios": "^1.10.0",
+    "lucide-react": "^0.294.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "lucide-react": "^0.294.0"
+    "react-router-dom": "^7.6.2"
   },
   "devDependencies": {
+    "@types/node": "^24.0.3",
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
     "@typescript-eslint/eslint-plugin": "^6.14.0",
@@ -26,7 +30,12 @@
     "typescript": "^5.2.2",
     "vite": "^5.0.8"
   },
-  "keywords": ["todo", "list", "react", "typescript"],
+  "keywords": [
+    "todo",
+    "list",
+    "react",
+    "typescript"
+  ],
   "author": "L8BY Team",
   "license": "MIT"
-} 
+}

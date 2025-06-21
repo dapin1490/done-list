@@ -1,15 +1,15 @@
 import { useState, KeyboardEvent } from 'react'
 import { Trash2, Edit, Save, X } from 'lucide-react'
-import { Done } from '../App'
+import { Done } from '../types'
 import './DoneItem.css'
 
 interface DoneItemProps {
   done: Done
-  onDelete: (id: number) => void
-  onEdit: (id: number, text: string, tags: string[]) => void
+  onDeleteDone: (id: number) => void
+  onEditDone: (id: number, newText: string, newTags: string[]) => void
 }
 
-const DoneItem = ({ done, onDelete, onEdit }: DoneItemProps) => {
+const DoneItem = ({ done, onDeleteDone, onEditDone }: DoneItemProps) => {
   const [isEditing, setIsEditing] = useState(false)
   const [editText, setEditText] = useState(done.text)
   const [editTags, setEditTags] = useState(done.tags)
@@ -18,7 +18,7 @@ const DoneItem = ({ done, onDelete, onEdit }: DoneItemProps) => {
   const handleEdit = () => {
     const newText = editText.trim()
     if (newText) {
-      onEdit(done.id, newText, editTags)
+      onEditDone(done.id, newText, editTags)
     }
     setIsEditing(false)
   }
@@ -47,6 +47,12 @@ const DoneItem = ({ done, onDelete, onEdit }: DoneItemProps) => {
 
   const removeTag = (tagToRemove: string) => {
     setEditTags(editTags.filter(tag => tag !== tagToRemove))
+  }
+
+  const onDelete = (id: number) => {
+    if (window.confirm("정말로 이 항목을 삭제하시겠습니까?")) {
+      onDeleteDone(id)
+    }
   }
 
   return (
@@ -91,6 +97,23 @@ const DoneItem = ({ done, onDelete, onEdit }: DoneItemProps) => {
         </div>
       ) : (
         <div className="display-view">
+          <div className="done-item-header">
+            <span className="done-item-date">
+              {new Date(done.createdAt).toLocaleDateString('ko-KR', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })}
+            </span>
+            <div className="done-item-actions">
+              <button onClick={() => setIsEditing(true)} className="action-button edit-button">
+                <Edit size={16} />
+              </button>
+              <button onClick={() => onDelete(done.id)} className="action-button delete-button">
+                <Trash2 size={16} />
+              </button>
+            </div>
+          </div>
           <div className="main-content">
             <span className="done-text">{done.text}</span>
             <div className="tags-list">
@@ -98,14 +121,6 @@ const DoneItem = ({ done, onDelete, onEdit }: DoneItemProps) => {
                 <div key={tag} className="tag-item static-tag">#{tag}</div>
               ))}
             </div>
-          </div>
-          <div className="actions">
-            <button onClick={() => setIsEditing(true)} className="action-button edit-button" title="편집">
-              <Edit size={16} />
-            </button>
-            <button onClick={() => onDelete(done.id)} className="action-button delete-button" title="삭제">
-              <Trash2 size={16} />
-            </button>
           </div>
         </div>
       )}
