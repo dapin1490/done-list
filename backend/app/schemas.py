@@ -1,9 +1,62 @@
 from pydantic import BaseModel, EmailStr
 from typing import List, Optional
 from datetime import datetime
-from .models import UserRole
 
-# Base model for common fields
+# ====================
+#       Done
+# ====================
+
+class DoneBase(BaseModel):
+    text: str
+    tags: Optional[List[str]] = []
+
+class DoneCreate(DoneBase):
+    pass
+
+class DoneUpdate(DoneBase):
+    pass
+
+class DoneInDB(DoneBase):
+    id: int
+    owner_id: int
+    created_at: datetime
+    
+    class Config:
+        orm_mode = True
+
+# Public-facing Done schema
+class Done(DoneBase):
+    id: int
+    created_at: datetime
+    owner_id: int # To associate with a user if needed on the frontend
+
+    class Config:
+        orm_mode = True
+
+
+# ====================
+#        User
+# ====================
+
+class UserBase(BaseModel):
+    email: EmailStr
+    username: Optional[str] = None
+
+class UserCreate(UserBase):
+    password: str
+
+class User(UserBase):
+    id: int
+    is_active: bool
+    role: str
+    dones: List[Done] = []
+
+    class Config:
+        orm_mode = True
+
+# ====================
+#        Token
+# ====================
 class Token(BaseModel):
     access_token: str
     token_type: str
@@ -53,24 +106,6 @@ class DoneEntry(DoneEntryBase):
     created_at: datetime
     tags: List[Tag] = []
     feedbacks: List[Feedback] = []
-
-    class Config:
-        orm_mode = True
-
-# User Schemas
-class UserBase(BaseModel):
-    email: EmailStr
-    username: Optional[str] = None
-
-class UserCreate(UserBase):
-    password: str
-
-class User(UserBase):
-    id: int
-    is_active: bool
-    role: UserRole
-    created_at: datetime
-    dones: List[DoneEntry] = []
 
     class Config:
         orm_mode = True 

@@ -1,45 +1,34 @@
-import enum
-from sqlalchemy import (Column, Integer, String, DateTime, Boolean, ForeignKey, Table, Enum)
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, JSON
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
+
 from .database import Base
 
-class UserRole(enum.Enum):
-    USER = "user"
-    ADMIN = "admin"
-
-done_tags = Table('done_tags', Base.metadata,
-    Column('done_entry_id', Integer, ForeignKey('done_entries.id'), primary_key=True),
-    Column('tag_id', Integer, ForeignKey('tags.id'), primary_key=True)
-)
 
 class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True, nullable=False)
-    username = Column(String, unique=True, index=True)
     hashed_password = Column(String, nullable=False)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    username = Column(String, unique=True, index=True, nullable=True)
     is_active = Column(Boolean, default=True)
-    role = Column(Enum(UserRole), default=UserRole.USER)
+    role = Column(String, default='user')
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
 
-    dones = relationship("DoneEntry", back_populates="owner")
-    feedbacks = relationship("Feedback", back_populates="author")
+    dones = relationship("Done", back_populates="owner", cascade="all, delete-orphan")
 
-class DoneEntry(Base):
-    __tablename__ = "done_entries"
+
+class Done(Base):
+    __tablename__ = "dones"
 
     id = Column(Integer, primary_key=True, index=True)
-    text = Column(String, nullable=False)
-    image_url = Column(String)
+    text = Column(String, index=True, nullable=False)
+    tags = Column(JSON)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-    is_public = Column(Boolean, default=True)
-    owner_id = Column(Integer, ForeignKey("users.id"))
+    owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
     owner = relationship("User", back_populates="dones")
-    tags = relationship("Tag", secondary=done_tags, back_populates="dones")
-    feedbacks = relationship("Feedback", back_populates="done_entry")
 
 class Tag(Base):
     __tablename__ = "tags"
@@ -47,7 +36,7 @@ class Tag(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True, index=True, nullable=False)
 
-    dones = relationship("DoneEntry", secondary=done_tags, back_populates="tags")
+    dones = relationship("Done", secondary=done_tags, back_populates="tags")
 
 class Feedback(Base):
     __tablename__ = "feedbacks"
