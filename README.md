@@ -27,7 +27,8 @@ npm install
 
 2. 개발 서버 실행:
 ```bash
-npm run dev
+python -m uvicorn main:app --reload # 백엔드
+npm run dev # 프론트엔드
 ```
 
 3. 브라우저에서 `http://localhost:3000` 접속

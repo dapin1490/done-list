@@ -13,8 +13,9 @@ class DoneBase(BaseModel):
 class DoneCreate(DoneBase):
     pass
 
-class DoneUpdate(DoneBase):
-    pass
+class DoneUpdate(BaseModel):
+    text: Optional[str] = None
+    tags: Optional[List[str]] = None
 
 class DoneInDB(DoneBase):
     id: int

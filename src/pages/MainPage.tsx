@@ -44,22 +44,38 @@ const MainPage = () => {
   };
 
   const deleteDone = async (id: number) => {
+    const originalDones = [...dones];
+    // Optimistic UI update
+    setDones(dones.filter(done => done.id !== id));
     try {
       await api.delete(`/dones/${id}`);
-      setDones(dones.filter(done => done.id !== id));
     } catch (error) {
       console.error("Failed to delete done", error);
       setError("항목을 삭제하는 데 실패했습니다.");
+      // Revert on error
+      setDones(originalDones);
     }
   };
 
   const editDone = async (id: number, newText: string, newTags: string[]) => {
+    const originalDones = [...dones];
+    const doneToUpdate = originalDones.find(d => d.id === id);
+    if (!doneToUpdate) return;
+
+    // Create the updated done item for optimistic UI update
+    const updatedDone = { ...doneToUpdate, text: newText, tags: newTags };
+    
+    // Optimistic UI update
+    setDones(originalDones.map(d => (d.id === id ? updatedDone : d)));
+
     try {
-      const response = await api.put<Done>(`/dones/${id}`, { text: newText, tags: newTags });
-      setDones(dones.map(done => (done.id === id ? response.data : done)));
+      // Send the update to the backend
+      await api.put<Done>(`/dones/${id}`, { text: newText, tags: newTags });
     } catch (error) {
       console.error("Failed to edit done", error);
       setError("항목을 수정하는 데 실패했습니다.");
+      // Revert on error
+      setDones(originalDones);
     }
   };
 
