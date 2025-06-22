@@ -4,49 +4,61 @@ import DoneList from '../components/DoneList';
 import DoneForm from '../components/DoneForm';
 import CalendarView from '../components/CalendarView';
 import { Done } from '../types';
+import api from '../services/api';
 import '../App.css';
 
-const STORAGE_KEY = 'done-list-app-data';
-
 const MainPage = () => {
-  const [dones, setDones] = useState<Done[]>(() => {
-    try {
-      const savedData = localStorage.getItem(STORAGE_KEY);
-      return savedData ? JSON.parse(savedData) : [];
-    } catch (error) {
-      console.error("Failed to load data from local storage", error);
-      return [];
-    }
-  });
-
+  const [dones, setDones] = useState<Done[]>([]);
   const [view, setView] = useState<'list' | 'calendar'>('list');
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(dones));
-    } catch (error) {
-      console.error("Failed to save data to local storage", error);
-    }
-  }, [dones]);
-
-  const addDone = (text: string, tags: string[]) => {
-    const newDone: Done = {
-      id: Date.now(),
-      text,
-      tags,
-      createdAt: new Date().toISOString(),
+    const fetchDones = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const response = await api.get<Done[]>('/dones/');
+        setDones(response.data);
+      } catch (error) {
+        console.error("Failed to fetch dones", error);
+        setError("데이터를 불러오는 데 실패했습니다.");
+      } finally {
+        setIsLoading(false);
+      }
     };
-    setDones([newDone, ...dones]);
+
+    fetchDones();
+  }, []);
+
+  const addDone = async (text: string, tags: string[]) => {
+    try {
+      const response = await api.post<Done>('/dones/', { text, tags });
+      setDones([response.data, ...dones]);
+    } catch (error) {
+      console.error("Failed to add done", error);
+      setError("항목을 추가하는 데 실패했습니다.");
+    }
   };
 
-  const deleteDone = (id: number) => {
-    setDones(dones.filter(done => done.id !== id));
+  const deleteDone = async (id: number) => {
+    try {
+      await api.delete(`/dones/${id}`);
+      setDones(dones.filter(done => done.id !== id));
+    } catch (error) {
+      console.error("Failed to delete done", error);
+      setError("항목을 삭제하는 데 실패했습니다.");
+    }
   };
 
-  const editDone = (id: number, newText: string, newTags: string[]) => {
-    setDones(dones.map(done =>
-      done.id === id ? { ...done, text: newText, tags: newTags } : done
-    ));
+  const editDone = async (id: number, newText: string, newTags: string[]) => {
+    try {
+      const response = await api.put<Done>(`/dones/${id}`, { text: newText, tags: newTags });
+      setDones(dones.map(done => (done.id === id ? response.data : done)));
+    } catch (error) {
+      console.error("Failed to edit done", error);
+      setError("항목을 수정하는 데 실패했습니다.");
+    }
   };
 
   return (
@@ -68,14 +80,18 @@ const MainPage = () => {
           </button>
         </div>
         
-        {view === 'list' ? (
-          <DoneList
-            dones={dones}
-            onDeleteDone={deleteDone}
-            onEditDone={editDone}
-          />
-        ) : (
-          <CalendarView dones={dones} />
+        {isLoading && <p>로딩 중...</p>}
+        {error && <p className="error-message">{error}</p>}
+        {!isLoading && !error && (
+          view === 'list' ? (
+            <DoneList
+              dones={dones}
+              onDeleteDone={deleteDone}
+              onEditDone={editDone}
+            />
+          ) : (
+            <CalendarView dones={dones} />
+          )
         )}
       </main>
     </div>
