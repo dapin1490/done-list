@@ -13,8 +13,8 @@ const TimelinePage = () => {
     const fetchPublicDones = async () => {
       try {
         setIsLoading(true);
-        // TODO: 백엔드에 /dones/public 엔드포인트 구현 후 교체 필요
-        const response = await api.get<Done[]>('/dones/');
+        // 백엔드에 /dones/public 엔드포인트 구현 완료
+        const response = await api.get<Done[]>('/dones/public/');
         // 백엔드에서 owner 정보도 함께 보내준다고 가정
         setDones(response.data);
       } catch (err) {
@@ -47,7 +47,8 @@ const TimelinePage = () => {
               key={done.id} 
               done={done} 
               onDeleteDone={placeholderFunc} 
-              onEditDone={placeholderFunc} 
+              onEditDone={placeholderFunc}
+              isTimeline={true}
             />
           ))}
         </div>

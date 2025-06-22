@@ -34,6 +34,17 @@ class Done(DoneBase):
     class Config:
         orm_mode = True
 
+# User Schemas
+class UserPublic(BaseModel):
+    id: int
+    email: EmailStr
+
+    class Config:
+        orm_mode = True
+
+# New public schema for Dones that includes owner info
+class DonePublic(Done):
+    owner: UserPublic
 
 # ====================
 #        User

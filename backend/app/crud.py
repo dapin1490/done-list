@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from . import models, schemas, security
 
 # User CRUD
@@ -28,8 +28,25 @@ def authenticate_user(db: Session, email: str, password: str):
     return user
 
 # Done CRUD
+def get_public_dones(db: Session, skip: int = 0, limit: int = 100):
+    return (
+        db.query(models.Done)
+        .options(joinedload(models.Done.owner))
+        .order_by(models.Done.created_at.desc())
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
+
 def get_dones_by_user(db: Session, user_id: int, skip: int = 0, limit: int = 100):
-    return db.query(models.Done).filter(models.Done.owner_id == user_id).offset(skip).limit(limit).all()
+    return (
+        db.query(models.Done)
+        .filter(models.Done.owner_id == user_id)
+        .order_by(models.Done.created_at.desc())
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
 
 def create_user_done(db: Session, done: schemas.DoneCreate, user_id: int):
     db_done = models.Done(**done.dict(), owner_id=user_id)

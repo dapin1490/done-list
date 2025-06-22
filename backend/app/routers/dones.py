@@ -57,4 +57,14 @@ def delete_user_done(
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not enough permissions")
         
     crud.delete_done(db=db, db_done=db_done)
-    return Response(status_code=status.HTTP_204_NO_CONTENT) 
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+@router.get("/public/", response_model=List[schemas.DonePublic], tags=["dones-public"])
+def read_public_dones(
+    skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
+):
+    """
+    Retrieve all public dones.
+    """
+    dones = crud.get_public_dones(db, skip=skip, limit=limit)
+    return dones 

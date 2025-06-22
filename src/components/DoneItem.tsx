@@ -7,9 +7,10 @@ interface DoneItemProps {
   done: Done
   onDeleteDone: (id: number) => void
   onEditDone: (id: number, newText: string, newTags: string[]) => void
+  isTimeline?: boolean
 }
 
-const DoneItem = ({ done, onDeleteDone, onEditDone }: DoneItemProps) => {
+const DoneItem = ({ done, onDeleteDone, onEditDone, isTimeline = false }: DoneItemProps) => {
   const [isEditing, setIsEditing] = useState(false)
   const [editText, setEditText] = useState(done.text)
   const [editTags, setEditTags] = useState(done.tags)
@@ -98,6 +99,9 @@ const DoneItem = ({ done, onDeleteDone, onEditDone }: DoneItemProps) => {
       ) : (
         <>
           <div className="main-content">
+            {isTimeline && done.owner && (
+              <span className="done-owner">{done.owner.email}</span>
+            )}
             <span className="done-text">{done.text}</span>
             {done.tags && done.tags.length > 0 && (
               <div className="tags-list">

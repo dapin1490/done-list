@@ -52,6 +52,13 @@
   display: none;
 }
 
+.done-owner {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 0.25rem;
+}
+
 .tags-list {
   display: flex;
   flex-wrap: wrap;
