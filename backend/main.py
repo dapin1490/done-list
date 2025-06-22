@@ -1,12 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .app.database import Base, engine
-from .app.routers import dones, users
+from app import models
+from app.database import Base, engine
+from app.routers import dones, users
 
 # This will create the tables in the database
 # For production, you should use a migration tool like Alembic
-Base.metadata.create_all(bind=engine)
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="Done List API",
@@ -30,9 +31,10 @@ app.add_middleware(
 )
 
 # Include routers
-app.include_router(users.router, prefix="/api")
-app.include_router(dones.router, prefix="/api")
+app.include_router(users.user_router)
+app.include_router(users.auth_router)
+app.include_router(dones.router)
 
-@app.get("/api")
+@app.get("/")
 def read_root():
     return {"message": "Welcome to the Done List API!"} 

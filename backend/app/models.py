@@ -30,33 +30,33 @@ class Done(Base):
 
     owner = relationship("User", back_populates="dones")
 
-class Tag(Base):
-    __tablename__ = "tags"
+# class Tag(Base):
+#     __tablename__ = "tags"
     
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, unique=True, index=True, nullable=False)
+#     id = Column(Integer, primary_key=True, index=True)
+#     name = Column(String, unique=True, index=True, nullable=False)
 
-    dones = relationship("Done", secondary=done_tags, back_populates="tags")
+#     dones = relationship("Done", secondary=done_tags, back_populates="tags")
 
-class Feedback(Base):
-    __tablename__ = "feedbacks"
+# class Feedback(Base):
+#     __tablename__ = "feedbacks"
 
-    id = Column(Integer, primary_key=True, index=True)
-    comment = Column(String)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    author_id = Column(Integer, ForeignKey("users.id"))
-    done_entry_id = Column(Integer, ForeignKey("done_entries.id"))
+#     id = Column(Integer, primary_key=True, index=True)
+#     comment = Column(String)
+#     created_at = Column(DateTime(timezone=True), server_default=func.now())
+#     author_id = Column(Integer, ForeignKey("users.id"))
+#     done_entry_id = Column(Integer, ForeignKey("done_entries.id"))
 
-    author = relationship("User", back_populates="feedbacks")
-    done_entry = relationship("DoneEntry", back_populates="feedbacks")
+#     author = relationship("User", back_populates="feedbacks")
+#     done_entry = relationship("DoneEntry", back_populates="feedbacks")
 
-class Notification(Base):
-    __tablename__ = "notifications"
+# class Notification(Base):
+#     __tablename__ = "notifications"
 
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    message = Column(String, nullable=False)
-    is_read = Column(Boolean, default=False)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
+#     id = Column(Integer, primary_key=True, index=True)
+#     user_id = Column(Integer, ForeignKey("users.id"))
+#     message = Column(String, nullable=False)
+#     is_read = Column(Boolean, default=False)
+#     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
-    user = relationship("User") 
+#     user = relationship("User") 

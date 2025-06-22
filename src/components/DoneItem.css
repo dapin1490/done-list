@@ -18,7 +18,7 @@
 
 .done-text {
   flex: 1;
-  font-size: 1.05rem;
+  font-size: 1rem;
   color: rgba(255, 255, 255, 0.9);
   word-break: break-word;
   padding-bottom: 0.5rem;
@@ -41,8 +41,17 @@
 .main-content {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  flex: 1;
+  gap: 8px;
+  width: 100%;
+}
+
+.done-item .main-content.center-text {
+  align-items: center;
+  text-align: center;
+}
+
+.done-item .main-content.center-text .tags-list {
+  display: none;
 }
 
 .item-tag-editor {

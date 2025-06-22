@@ -99,7 +99,7 @@ const DoneItem = ({ done, onDeleteDone, onEditDone }: DoneItemProps) => {
         <div className="display-view">
           <div className="done-item-header">
             <span className="done-item-date">
-              {new Date(done.createdAt).toLocaleDateString('ko-KR', {
+              {done.createdAt && new Date(done.createdAt).toLocaleDateString('ko-KR', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
@@ -114,10 +114,10 @@ const DoneItem = ({ done, onDeleteDone, onEditDone }: DoneItemProps) => {
               </button>
             </div>
           </div>
-          <div className="main-content">
+          <div className={`main-content ${!done.tags || done.tags.length === 0 ? 'center-text' : ''}`}>
             <span className="done-text">{done.text}</span>
             <div className="tags-list">
-              {done.tags.map(tag => (
+              {done.tags && done.tags.map(tag => (
                 <div key={tag} className="tag-item static-tag">#{tag}</div>
               ))}
             </div>
