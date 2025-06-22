@@ -7,12 +7,24 @@ interface CalendarViewProps {
   dones: Done[];
 }
 
+const toYYYYMMDD = (date: Date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 const CalendarView = ({ dones }: CalendarViewProps) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
   const donesByDate = dones.reduce((acc, done) => {
-    const dateKey = new Date(done.createdAt).toDateString();
-    acc[dateKey] = (acc[dateKey] || 0) + 1;
+    if (done.created_at) {
+      const date = new Date(done.created_at);
+      if (!isNaN(date.getTime())) { // Check if the date is valid
+        const dateKey = toYYYYMMDD(date);
+        acc[dateKey] = (acc[dateKey] || 0) + 1;
+      }
+    }
     return acc;
   }, {} as Record<string, number>);
 
@@ -50,17 +62,17 @@ const CalendarView = ({ dones }: CalendarViewProps) => {
     const monthEnd = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
     const startDate = new Date(monthStart);
     startDate.setDate(startDate.getDate() - monthStart.getDay());
-    
+
     const cells = [];
     let day = startDate;
 
-    while (day <= monthEnd || day.getDay() !== 0) {
-      const dateKey = day.toDateString();
+    for (let i = 0; i < 42; i++) { // Always render 6 weeks for a consistent grid
+      const dateKey = toYYYYMMDD(day);
       const doneCount = donesByDate[dateKey] || 0;
       
       cells.push(
         <div
-          key={day.toString()}
+          key={day.toISOString()} // Use a more reliable key
           className={`day-cell ${
             day.getMonth() !== currentMonth.getMonth() ? 'disabled' : ''
           } ${doneCount > 0 ? 'has-dones' : ''}`}
@@ -70,7 +82,6 @@ const CalendarView = ({ dones }: CalendarViewProps) => {
         </div>
       );
       day.setDate(day.getDate() + 1);
-      if (day > monthEnd && day.getDay() === 0) break;
     }
     
     return <div className="calendar-grid">{cells}</div>;
