@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { List, Calendar } from 'lucide-react';
+import { List, Calendar, LogOut } from 'lucide-react';
 import DoneList from '../components/DoneList';
 import DoneForm from '../components/DoneForm';
 import CalendarView from '../components/CalendarView';
 import { Done } from '../types';
 import api from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
 import '../App.css';
 
 const MainPage = () => {
@@ -12,6 +13,7 @@ const MainPage = () => {
   const [view, setView] = useState<'list' | 'calendar'>('list');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { logout, user } = useAuth();
 
   useEffect(() => {
     const fetchDones = async () => {
@@ -64,8 +66,16 @@ const MainPage = () => {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>DONE</h1>
-        <p>오늘 하루, 어떤 멋진 일을 해내셨나요?</p>
+        <div className="header-left">
+          <h1>DONE</h1>
+          <p>오늘 하루, 어떤 멋진 일을 해내셨나요?</p>
+        </div>
+        <div className="header-right">
+          {user && <span className="user-email">{user.email}</span>}
+          <button onClick={logout} className="logout-button" title="로그아웃">
+            <LogOut size={20} />
+          </button>
+        </div>
       </header>
       <main className="app-main">
         <DoneForm onAddDone={addDone} />
