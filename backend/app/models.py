@@ -17,6 +17,7 @@ class User(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     dones = relationship("Done", back_populates="owner", cascade="all, delete-orphan")
+    likes = relationship("Like", back_populates="user", cascade="all, delete-orphan")
 
 
 class Done(Base):
@@ -29,6 +30,19 @@ class Done(Base):
     owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
     owner = relationship("User", back_populates="dones")
+    likes = relationship("Like", cascade="all, delete-orphan")
+
+
+class Like(Base):
+    __tablename__ = "likes"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    done_id = Column(Integer, ForeignKey("dones.id"), nullable=False)
+
+    user = relationship("User")
+    done = relationship("Done", back_populates="likes")
+
 
 # class Tag(Base):
 #     __tablename__ = "tags"

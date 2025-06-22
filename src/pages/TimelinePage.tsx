@@ -28,6 +28,30 @@ const TimelinePage = () => {
     fetchPublicDones();
   }, []);
 
+  const handleToggleLike = async (doneId: number) => {
+    const originalDones = [...dones];
+    
+    // Optimistic UI Update
+    setDones(dones.map(d => {
+      if (d.id === doneId) {
+        const isLiked = !d.is_liked;
+        const likesCount = isLiked ? d.likes_count + 1 : d.likes_count - 1;
+        return { ...d, is_liked: isLiked, likes_count: likesCount };
+      }
+      return d;
+    }));
+
+    try {
+      // TODO: 백엔드 좋아요 API 구현 후 활성화
+      // await api.post(`/dones/${doneId}/like`);
+    } catch (err) {
+      setError('좋아요 처리에 실패했습니다. 잠시 후 다시 시도해 주세요.');
+      // Revert on error
+      setDones(originalDones);
+      console.error(err);
+    }
+  };
+
   // DoneItem이 onDeleteDone, onEditDone을 필수로 요구하므로 임시 함수를 전달합니다.
   // 타임라인에서는 수정/삭제 기능을 제공하지 않을 예정이므로, 추후 DoneItem을 분리하거나 props를 선택적으로 변경해야 합니다.
   const placeholderFunc = () => {};
@@ -48,6 +72,7 @@ const TimelinePage = () => {
               done={done} 
               onDeleteDone={placeholderFunc} 
               onEditDone={placeholderFunc}
+              onToggleLike={handleToggleLike}
               isTimeline={true}
             />
           ))}

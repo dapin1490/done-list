@@ -59,6 +59,22 @@ def delete_user_done(
     crud.delete_done(db=db, db_done=db_done)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
+@router.post("/{done_id}/like", response_model=schemas.DonePublic, tags=["likes"])
+def toggle_like_on_done(
+    done_id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_active_user),
+):
+    db_done = crud.get_done(db, done_id=done_id)
+    if not db_done:
+        raise HTTPException(status_code=404, detail="Done not found")
+
+    like = crud.toggle_like(db=db, db_done=db_done, user_id=current_user.id)
+    
+    # Re-fetch the done to get updated like count and status
+    updated_done = crud.get_done_with_like_status(db=db, done_id=done_id, user_id=current_user.id)
+    return updated_done
+
 @router.get("/public/", response_model=List[schemas.DonePublic], tags=["dones-public"])
 def read_public_dones(
     skip: int = 0, limit: int = 100, db: Session = Depends(get_db)

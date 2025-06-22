@@ -10,6 +10,8 @@ export interface Done {
   created_at: string; // API 응답은 보통 ISO 문자열로 오므로 string으로 받음
   owner_id: number;
   owner: UserPublic;
+  likes_count: number;
+  is_liked: boolean;
 }
 
 export interface User {

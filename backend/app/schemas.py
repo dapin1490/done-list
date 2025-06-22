@@ -1,6 +1,22 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, root_validator
 from typing import List, Optional
 from datetime import datetime
+
+# ====================
+#       Like
+# ====================
+class LikeBase(BaseModel):
+    done_id: int
+
+class LikeCreate(LikeBase):
+    pass
+
+class Like(LikeBase):
+    id: int
+    user_id: int
+    
+    class Config:
+        orm_mode = True
 
 # ====================
 #       Done
@@ -45,6 +61,8 @@ class UserPublic(BaseModel):
 # New public schema for Dones that includes owner info
 class DonePublic(Done):
     owner: UserPublic
+    likes_count: int
+    is_liked: bool
 
 # ====================
 #        User

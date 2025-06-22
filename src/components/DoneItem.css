@@ -153,4 +153,36 @@
   font-size: 1rem;
   outline: none;
   border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.item-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.like-button {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  transition: color 0.3s ease;
+}
+
+.like-button:hover,
+.like-button.liked {
+  color: #ff6b6b;
+}
+
+.like-button.liked .heart-icon {
+  fill: #ff6b6b;
+}
+
+.like-count {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
 } 

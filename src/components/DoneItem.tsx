@@ -1,5 +1,5 @@
 import { useState, KeyboardEvent } from 'react'
-import { Trash2, Edit, Save, X } from 'lucide-react'
+import { Trash2, Edit, Save, X, Heart } from 'lucide-react'
 import { Done } from '../types'
 import './DoneItem.css'
 
@@ -7,10 +7,11 @@ interface DoneItemProps {
   done: Done
   onDeleteDone: (id: number) => void
   onEditDone: (id: number, newText: string, newTags: string[]) => void
+  onToggleLike: (id: number) => void
   isTimeline?: boolean
 }
 
-const DoneItem = ({ done, onDeleteDone, onEditDone, isTimeline = false }: DoneItemProps) => {
+const DoneItem = ({ done, onDeleteDone, onEditDone, onToggleLike, isTimeline = false }: DoneItemProps) => {
   const [isEditing, setIsEditing] = useState(false)
   const [editText, setEditText] = useState(done.text)
   const [editTags, setEditTags] = useState(done.tags)
@@ -55,6 +56,10 @@ const DoneItem = ({ done, onDeleteDone, onEditDone, isTimeline = false }: DoneIt
       onDeleteDone(done.id)
     }
   }
+
+  const handleLike = () => {
+    onToggleLike(done.id);
+  };
 
   return (
     <div className="done-item">
@@ -110,14 +115,30 @@ const DoneItem = ({ done, onDeleteDone, onEditDone, isTimeline = false }: DoneIt
                 ))}
               </div>
             )}
+            {isTimeline && (
+              <div className="item-footer">
+                <button 
+                  onClick={handleLike} 
+                  className={`like-button ${done.is_liked ? 'liked' : ''}`}
+                  title={done.is_liked ? '좋아요 취소' : '좋아요'}
+                >
+                  <Heart size={16} className="heart-icon" />
+                </button>
+                <span className="like-count">{done.likes_count}</span>
+              </div>
+            )}
           </div>
           <div className="actions">
-            <button onClick={() => setIsEditing(true)} className="action-button edit-button" title="수정">
-              <Edit size={16} />
-            </button>
-            <button onClick={onDelete} className="action-button delete-button" title="삭제">
-              <Trash2 size={16} />
-            </button>
+            {!isTimeline && (
+              <>
+                <button onClick={() => setIsEditing(true)} className="action-button edit-button" title="수정">
+                  <Edit size={16} />
+                </button>
+                <button onClick={onDelete} className="action-button delete-button" title="삭제">
+                  <Trash2 size={16} />
+                </button>
+              </>
+            )}
           </div>
         </>
       )}

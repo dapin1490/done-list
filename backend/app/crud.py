@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session, joinedload
+from typing import Optional
 from . import models, schemas, security
 
 # User CRUD
@@ -27,16 +28,37 @@ def authenticate_user(db: Session, email: str, password: str):
         return None
     return user
 
+# Like CRUD
+def toggle_like(db: Session, done_id: int, user_id: int) -> Optional[models.Like]:
+    like = db.query(models.Like).filter(
+        models.Like.done_id == done_id,
+        models.Like.user_id == user_id
+    ).first()
+    
+    if like:
+        db.delete(like)
+        db.commit()
+        return None
+    
+    new_like = models.Like(done_id=done_id, user_id=user_id)
+    db.add(new_like)
+    db.commit()
+    db.refresh(new_like)
+    return new_like
+
 # Done CRUD
-def get_public_dones(db: Session, skip: int = 0, limit: int = 100):
-    return (
-        db.query(models.Done)
-        .options(joinedload(models.Done.owner))
-        .order_by(models.Done.created_at.desc())
-        .offset(skip)
-        .limit(limit)
-        .all()
-    )
+def get_public_dones(db: Session, skip: int = 0, limit: int = 100, current_user_id: Optional[int] = None):
+    dones = db.query(models.Done).options(
+        joinedload(models.Done.owner),
+        joinedload(models.Done.likes)
+    ).order_by(models.Done.created_at.desc()).offset(skip).limit(limit).all()
+
+    # Manually attach the computed properties. Pydantic's orm_mode will handle it.
+    for done in dones:
+        done.likes_count = len(done.likes)
+        done.is_liked = any(like.user_id == current_user_id for like in done.likes) if current_user_id else False
+        
+    return dones
 
 def get_dones_by_user(db: Session, user_id: int, skip: int = 0, limit: int = 100):
     return (
@@ -70,4 +92,4 @@ def update_done(db: Session, db_done: models.Done, done_in: schemas.DoneUpdate):
 def delete_done(db: Session, db_done: models.Done):
     db.delete(db_done)
     db.commit()
-    return db_done 
+    return db_done
