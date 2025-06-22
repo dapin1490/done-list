@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { List, Calendar, LogOut } from 'lucide-react';
+import { List, Calendar, LogOut, Users } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import DoneList from '../components/DoneList';
 import DoneForm from '../components/DoneForm';
 import CalendarView from '../components/CalendarView';
@@ -103,6 +104,10 @@ const MainPage = () => {
             <Calendar size={18} />
             <span>캘린더</span>
           </button>
+          <Link to="/timeline" className="view-button">
+            <Users size={18} />
+            <span>타임라인</span>
+          </Link>
         </div>
         
         {isLoading && <p>로딩 중...</p>}
