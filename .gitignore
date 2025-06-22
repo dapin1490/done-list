@@ -1,3 +1,12 @@
+# DB
+*.db
+*.sqlite3
+*.sqlite
+*.sqlite3-journal
+*.sqlite3-shm
+*.sqlite3-wal
+*.sqlite3-journal
+
 # Logs
 logs
 *.log
