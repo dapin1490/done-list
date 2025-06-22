@@ -1,6 +1,7 @@
 .done-item {
   display: flex;
-  align-items: center;
+  justify-content: space-between;
+  align-items: flex-start;
   gap: 1rem;
   padding: 1.25rem 1.5rem;
   background: rgba(255, 255, 255, 0.08);
@@ -17,18 +18,17 @@
 }
 
 .done-text {
-  flex: 1;
   font-size: 1rem;
   color: rgba(255, 255, 255, 0.9);
   word-break: break-word;
-  padding-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
 }
 
 .display-view {
+  flex: 1;
+  min-width: 0;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
+  flex-direction: column;
 }
 
 .edit-view {
@@ -39,10 +39,8 @@
 }
 
 .main-content {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: 100%;
+  flex: 1;
+  min-width: 0;
 }
 
 .done-item .main-content.center-text {
@@ -54,31 +52,59 @@
   display: none;
 }
 
+.tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.tag-item {
+  background: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.8);
+  padding: 0.3rem 0.7rem;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+}
+
+.static-tag {
+  padding: 0.35rem 0.7rem;
+}
+
 .item-tag-editor {
     padding: 0.5rem;
 }
 
-.static-tag {
-  background: rgba(255, 255, 255, 0.15);
-  color: rgba(255, 255, 255, 0.8);
-  padding: 0.25rem 0.6rem;
-  font-size: 0.85rem;
-  border-radius: 6px;
-}
-
 .actions {
   display: flex;
-  gap: 0.5rem;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  gap: 0.75rem;
 }
 
-.done-item:hover .actions {
+.done-item .actions {
   opacity: 1;
 }
 
+.done-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.done-item-date {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.done-item-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
 .action-button {
-  padding: 0.6rem;
+  padding: 0.5rem;
   border: none;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.1);

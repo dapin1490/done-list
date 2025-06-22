@@ -49,9 +49,9 @@ const DoneItem = ({ done, onDeleteDone, onEditDone }: DoneItemProps) => {
     setEditTags(editTags.filter(tag => tag !== tagToRemove))
   }
 
-  const onDelete = (id: number) => {
+  const onDelete = () => {
     if (window.confirm("정말로 이 항목을 삭제하시겠습니까?")) {
-      onDeleteDone(id)
+      onDeleteDone(done.id)
     }
   }
 
@@ -96,33 +96,26 @@ const DoneItem = ({ done, onDeleteDone, onEditDone }: DoneItemProps) => {
           </div>
         </div>
       ) : (
-        <div className="display-view">
-          <div className="done-item-header">
-            <span className="done-item-date">
-              {done.createdAt && new Date(done.createdAt).toLocaleDateString('ko-KR', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-              })}
-            </span>
-            <div className="done-item-actions">
-              <button onClick={() => setIsEditing(true)} className="action-button edit-button">
-                <Edit size={16} />
-              </button>
-              <button onClick={() => onDelete(done.id)} className="action-button delete-button">
-                <Trash2 size={16} />
-              </button>
-            </div>
-          </div>
-          <div className={`main-content ${!done.tags || done.tags.length === 0 ? 'center-text' : ''}`}>
+        <>
+          <div className="main-content">
             <span className="done-text">{done.text}</span>
-            <div className="tags-list">
-              {done.tags && done.tags.map(tag => (
-                <div key={tag} className="tag-item static-tag">#{tag}</div>
-              ))}
-            </div>
+            {done.tags && done.tags.length > 0 && (
+              <div className="tags-list">
+                {done.tags.map(tag => (
+                  <span key={tag} className="tag-item">#{tag}</span>
+                ))}
+              </div>
+            )}
           </div>
-        </div>
+          <div className="actions">
+            <button onClick={() => setIsEditing(true)} className="action-button edit-button" title="수정">
+              <Edit size={16} />
+            </button>
+            <button onClick={onDelete} className="action-button delete-button" title="삭제">
+              <Trash2 size={16} />
+            </button>
+          </div>
+        </>
       )}
     </div>
   )
