@@ -59,18 +59,17 @@ const MainPage = () => {
 
   const editDone = async (id: number, newText: string, newTags: string[]) => {
     const originalDones = [...dones];
-    const doneToUpdate = originalDones.find(d => d.id === id);
-    if (!doneToUpdate) return;
-
-    // Create the updated done item for optimistic UI update
-    const updatedDone = { ...doneToUpdate, text: newText, tags: newTags };
-    
-    // Optimistic UI update
-    setDones(originalDones.map(d => (d.id === id ? updatedDone : d)));
+    // Optimistic UI update: First, create a temporary updated state
+    const updatedDones = originalDones.map(d => 
+      d.id === id ? { ...d, text: newText, tags: newTags } : d
+    );
+    setDones(updatedDones);
 
     try {
       // Send the update to the backend
-      await api.put<Done>(`/dones/${id}`, { text: newText, tags: newTags });
+      const response = await api.put<Done>(`/dones/${id}`, { text: newText, tags: newTags });
+      // On success, update the state with the final data from the server
+      setDones(originalDones.map(d => (d.id === id ? response.data : d)));
     } catch (error) {
       console.error("Failed to edit done", error);
       setError("항목을 수정하는 데 실패했습니다.");

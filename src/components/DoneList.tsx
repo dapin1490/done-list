@@ -1,4 +1,4 @@
-import { Done } from '../App'
+import { Done } from '../types'
 import DoneItem from './DoneItem'
 import './DoneList.css'
 
@@ -24,8 +24,8 @@ const DoneList = ({ dones, onDeleteDone, onEditDone }: DoneListProps) => {
         <DoneItem
           key={done.id}
           done={done}
-          onDelete={onDeleteDone}
-          onEdit={onEditDone}
+          onDeleteDone={onDeleteDone}
+          onEditDone={onEditDone}
         />
       ))}
     </div>
