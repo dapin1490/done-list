@@ -9,9 +9,10 @@ interface DoneItemProps {
   onEditDone: (id: number, newText: string, newTags: string[]) => void
   onToggleLike: (id: number) => void
   isTimeline?: boolean
+  userId?: number
 }
 
-const DoneItem = ({ done, onDeleteDone, onEditDone, onToggleLike, isTimeline = false }: DoneItemProps) => {
+const DoneItem = ({ done, onDeleteDone, onEditDone, onToggleLike, isTimeline = false, userId }: DoneItemProps) => {
   const [isEditing, setIsEditing] = useState(false)
   const [editText, setEditText] = useState(done.text)
   const [editTags, setEditTags] = useState(done.tags)
@@ -130,6 +131,16 @@ const DoneItem = ({ done, onDeleteDone, onEditDone, onToggleLike, isTimeline = f
           </div>
           <div className="actions">
             {!isTimeline && (
+              <>
+                <button onClick={() => setIsEditing(true)} className="action-button edit-button" title="수정">
+                  <Edit size={16} />
+                </button>
+                <button onClick={onDelete} className="action-button delete-button" title="삭제">
+                  <Trash2 size={16} />
+                </button>
+              </>
+            )}
+            {isTimeline && userId && done.owner?.id === userId && !isEditing && (
               <>
                 <button onClick={() => setIsEditing(true)} className="action-button edit-button" title="수정">
                   <Edit size={16} />

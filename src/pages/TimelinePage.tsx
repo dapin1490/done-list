@@ -3,11 +3,13 @@ import { Done } from '../types';
 import api from '../services/api';
 import DoneItem from '../components/DoneItem';
 import '../components/DoneList.css';
+import { useAuth } from '../contexts/AuthContext';
 
 const TimelinePage = () => {
   const [dones, setDones] = useState<Done[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchPublicDones = async () => {
@@ -74,6 +76,7 @@ const TimelinePage = () => {
               onEditDone={placeholderFunc}
               onToggleLike={handleToggleLike}
               isTimeline={true}
+              userId={user?.id}
             />
           ))}
         </div>
