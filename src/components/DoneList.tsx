@@ -5,7 +5,7 @@ import './DoneList.css'
 interface DoneListProps {
   dones: Done[]
   onDeleteDone: (id: number) => void
-  onEditDone: (id: number, text: string, tags: string[]) => void
+  onEditDone: (id: number, text: string, tags: string[], is_public: boolean) => void
 }
 
 const DoneList = ({ dones, onDeleteDone, onEditDone }: DoneListProps) => {
@@ -26,6 +26,7 @@ const DoneList = ({ dones, onDeleteDone, onEditDone }: DoneListProps) => {
           done={done}
           onDeleteDone={onDeleteDone}
           onEditDone={onEditDone}
+          onToggleLike={() => {}}
         />
       ))}
     </div>

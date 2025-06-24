@@ -25,6 +25,7 @@ class Like(LikeBase):
 class DoneBase(BaseModel):
     text: str
     tags: Optional[List[str]] = []
+    is_public: Optional[bool] = False
 
 class DoneCreate(DoneBase):
     pass
@@ -32,6 +33,7 @@ class DoneCreate(DoneBase):
 class DoneUpdate(BaseModel):
     text: Optional[str] = None
     tags: Optional[List[str]] = None
+    is_public: Optional[bool] = None
 
 class DoneInDB(DoneBase):
     id: int
@@ -46,6 +48,7 @@ class Done(DoneBase):
     id: int
     created_at: datetime
     owner_id: int # To associate with a user if needed on the frontend
+    is_public: bool = False
 
     class Config:
         orm_mode = True

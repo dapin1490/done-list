@@ -34,9 +34,9 @@ const MainPage = () => {
     fetchDones();
   }, []);
 
-  const addDone = async (text: string, tags: string[]) => {
+  const addDone = async (text: string, tags: string[], is_public: boolean) => {
     try {
-      const response = await api.post<Done>('/dones/', { text, tags });
+      const response = await api.post<Done>('/dones/', { text, tags, is_public });
       setDones([response.data, ...dones]);
     } catch (error) {
       console.error("Failed to add done", error);
@@ -58,17 +58,17 @@ const MainPage = () => {
     }
   };
 
-  const editDone = async (id: number, newText: string, newTags: string[]) => {
+  const editDone = async (id: number, newText: string, newTags: string[], is_public: boolean) => {
     const originalDones = [...dones];
     // Optimistic UI update: First, create a temporary updated state
     const updatedDones = originalDones.map(d => 
-      d.id === id ? { ...d, text: newText, tags: newTags } : d
+      d.id === id ? { ...d, text: newText, tags: newTags, is_public } : d
     );
     setDones(updatedDones);
 
     try {
       // Send the update to the backend
-      const response = await api.put<Done>(`/dones/${id}`, { text: newText, tags: newTags });
+      const response = await api.put<Done>(`/dones/${id}`, { text: newText, tags: newTags, is_public });
       // On success, update the state with the final data from the server
       setDones(originalDones.map(d => (d.id === id ? response.data : d)));
     } catch (error) {

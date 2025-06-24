@@ -28,6 +28,7 @@ class Done(Base):
     tags = Column(JSON)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    is_public = Column(Boolean, default=True, nullable=False)
 
     owner = relationship("User", back_populates="dones")
     likes = relationship("Like", cascade="all, delete-orphan")

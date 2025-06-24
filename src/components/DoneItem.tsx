@@ -6,7 +6,7 @@ import './DoneItem.css'
 interface DoneItemProps {
   done: Done
   onDeleteDone: (id: number) => void
-  onEditDone: (id: number, newText: string, newTags: string[]) => void
+  onEditDone: (id: number, newText: string, newTags: string[], is_public: boolean) => void
   onToggleLike: (id: number) => void
   isTimeline?: boolean
   userId?: number
@@ -17,11 +17,12 @@ const DoneItem = ({ done, onDeleteDone, onEditDone, onToggleLike, isTimeline = f
   const [editText, setEditText] = useState(done.text)
   const [editTags, setEditTags] = useState(done.tags)
   const [tagInput, setTagInput] = useState('')
+  const [editIsPublic, setEditIsPublic] = useState(done.is_public)
 
   const handleEdit = () => {
     const newText = editText.trim()
     if (newText) {
-      onEditDone(done.id, newText, editTags)
+      onEditDone(done.id, newText, editTags, editIsPublic)
     }
     setIsEditing(false)
   }
@@ -73,6 +74,16 @@ const DoneItem = ({ done, onDeleteDone, onEditDone, onToggleLike, isTimeline = f
             onKeyDown={handleKeyPress}
             className="edit-input"
           />
+          <div className="public-toggle">
+            <label>
+              <input
+                type="checkbox"
+                checked={editIsPublic}
+                onChange={e => setEditIsPublic(e.target.checked)}
+              />
+              타임라인에 공개
+            </label>
+          </div>
           <div className="tag-editor item-tag-editor">
             <div className="tags-list">
               {editTags.map(tag => (

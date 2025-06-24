@@ -3,13 +3,14 @@ import { Plus, X } from 'lucide-react'
 import './DoneForm.css'
 
 interface DoneFormProps {
-  onAddDone: (text: string, tags: string[]) => void
+  onAddDone: (text: string, tags: string[], is_public: boolean) => void
 }
 
 const DoneForm = ({ onAddDone }: DoneFormProps) => {
   const [text, setText] = useState('')
   const [tagInput, setTagInput] = useState('')
   const [tags, setTags] = useState<string[]>([])
+  const [isPublic, setIsPublic] = useState(false)
 
   const handleTagInput = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' || e.key === ',') {
@@ -29,9 +30,10 @@ const DoneForm = ({ onAddDone }: DoneFormProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (text.trim()) {
-      onAddDone(text.trim(), tags)
+      onAddDone(text.trim(), tags, isPublic)
       setText('')
       setTags([])
+      setIsPublic(false)
     }
   }
 
@@ -49,6 +51,16 @@ const DoneForm = ({ onAddDone }: DoneFormProps) => {
           <Plus size={20} />
           <span>기록</span>
         </button>
+      </div>
+      <div className="public-toggle">
+        <label>
+          <input
+            type="checkbox"
+            checked={isPublic}
+            onChange={e => setIsPublic(e.target.checked)}
+          />
+          타임라인에 공개
+        </label>
       </div>
       <div className="tag-editor">
         <div className="tags-list">

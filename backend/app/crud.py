@@ -51,7 +51,8 @@ def get_public_dones(db: Session, skip: int = 0, limit: int = 100, current_user_
     dones = db.query(models.Done).options(
         joinedload(models.Done.owner),
         joinedload(models.Done.likes)
-    ).order_by(models.Done.created_at.desc()).offset(skip).limit(limit).all()
+    ).filter(models.Done.is_public == True)
+    dones = dones.order_by(models.Done.created_at.desc()).offset(skip).limit(limit).all()
 
     # Manually attach the computed properties. Pydantic's orm_mode will handle it.
     for done in dones:

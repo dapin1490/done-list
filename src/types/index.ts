@@ -12,6 +12,7 @@ export interface Done {
   owner: UserPublic;
   likes_count: number;
   is_liked: boolean;
+  is_public: boolean; // 공개 여부
 }
 
 export interface User {
